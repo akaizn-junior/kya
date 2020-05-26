@@ -51,6 +51,10 @@ function normalize(key) {
     arrowup: 'ArrowUp',
     arrowleft: 'ArrowLeft',
     arrowright: 'ArrowRight',
+    downarrow: 'ArrowDown',
+    uparrow: 'ArrowUp',
+    leftarrow: 'ArrowLeft',
+    rightarrow: 'ArrowRight',
     numlock: 'NumLock',
     scrolllock: 'ScrollLock',
     pause: 'Pause',
@@ -60,11 +64,11 @@ function normalize(key) {
   };
 
   // return a normalized version of the key
-  if (Object.keys(toNormalize).includes(lower) && toNormalize[lower]) {
-    return toNormalize[lower];
-  }
-
-  return key;
+  return (
+    Object.keys(toNormalize).includes(lower) && toNormalize[lower]
+      ? toNormalize[lower]
+      : key
+  );
 }
 
 // RUNNER
@@ -76,6 +80,7 @@ function run(binds, opts = {}) {
 
   let pressedCount = 1;
   let lastPressed = '';
+  let pressed = [];
 
   const textInputs = [
     'text',
@@ -86,8 +91,7 @@ function run(binds, opts = {}) {
   ];
 
   const normalizedKeysToObserve = vObserve.map(o => {
-    const normalized = stripAndSplit(o).map(k => normalize(k));
-    return normalized.join('+');
+    return stripAndSplit(o).map(k => normalize(k)).join('+');
   });
 
   return (e) => {
@@ -98,17 +102,20 @@ function run(binds, opts = {}) {
     );
 
     let pressedKey = e.key.trim() ? e.key : e.code;
+    pressed.push(pressedKey);
 
     const altComposed = () => e.altKey ? 'Alt+' : '';
     const shiftComposed = () => e.shiftKey ? 'Shift+' : '';
     const ctrlComposed = () => e.ctrlKey ? 'Control+' : '';
     const metaComposed = () => e.metaKey ? 'Meta+' : '';
 
-    const composedKey = altComposed()
+    const composedKey = pressed.length === 1
+    ? altComposed()
       + shiftComposed()
       + ctrlComposed()
       + metaComposed()
-      + pressedKey;
+      + pressedKey
+    : pressed.join('+');
 
     let normalizedBinds = {};
 
@@ -152,6 +159,11 @@ function run(binds, opts = {}) {
       // register last pressed
       lastPressed = matched.keyBinding;
     }
+
+    setTimeout(() => {
+      // reset pressed count
+      pressed = [];
+    }, 250);
   }
 }
 
@@ -165,11 +177,8 @@ function listen(binds, opts = {}) {
   window.addEventListener('keydown', run(binds, opts), false);
 }
 
-function destroy() {}
-
 // EXPORT
 
 window.kya = {
-  listen,
-  destroy
+  listen
 };
