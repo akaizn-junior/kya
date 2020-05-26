@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kya</title>
+  <style>
+    .textbox {
+      border: 1px solid rgb(30, 78, 235);
+      width: 400px;
+      margin: 5px;
+      padding: 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <textarea class="textbox">
+    A problem
+  </textarea>
+  <div class="textbox" contenteditable="true"></div>
+  <input class="textbox" type="text" />
+  <script src="../src/main.js"></script>
+  <script>
+    const binds = [
+      {
+        label: 'Log what was pressed',
+        keyBinding: 'a',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }, {
+        label: 'Log what was pressed',
+        keyBinding: 'ctrl + a',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }, {
+        label: 'Log what was pressed',
+        keyBinding: 'backspace',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }, {
+        label: 'Log what was pressed',
+        keyBinding: 'Ctrl + s',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }, {
+        label: 'Log what was pressed',
+        keyBinding: 'alt + s',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }, {
+        label: 'Log what was pressed',
+        keyBinding: 'shift + w',
+        command: res => { console.log('You pressed the key "', res.keyBinding, res.pressedCount, '"') }
+      }
+    ];
+
+    const opts = {
+      observe: [
+        'Control + s',
+        'control + a',
+        'ctrl + f'
+      ]
+    };
+
+    kya.listen(binds, opts);
+  </script>
+</body>
+</html>
